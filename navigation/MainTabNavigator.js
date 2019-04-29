@@ -9,14 +9,14 @@ import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen";
 import LinksScreen from "../screens/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import DebugScreen from "../screens/DebugScreen";
+import LoginScreen from "../screens/LoginScreen";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
 });
 
 HomeStack.navigationOptions = {
-  tabBarLabel: "Home",
+  tabBarLabel: "Feed",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -34,7 +34,7 @@ const LinksStack = createStackNavigator({
 });
 
 LinksStack.navigationOptions = {
-  tabBarLabel: "Links",
+  tabBarLabel: "Chat",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -48,7 +48,7 @@ const SettingsStack = createStackNavigator({
 });
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: "Settings",
+  tabBarLabel: "Sup",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -57,35 +57,32 @@ SettingsStack.navigationOptions = {
   )
 };
 
-const DebugStack = createStackNavigator({
-  Debug: DebugScreen
+const LoginStack = createStackNavigator({
+  Login: LoginScreen
 });
 
-DebugStack.navigationOptions = {
-  tabBarLabel: "Debug",
+LoginStack.navigationOptions = {
+  tabBarLabel: "Log in",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={
-        Platform.OS === "ios"
-          ? "ios-information-circle"
-          : "md-information-circle"
-      }
+      name={Platform.OS === "ios" ? "ios-unlock" : "md-unlock"}
     />
   )
 };
 
 export default createBottomTabNavigator(
   {
+    LoginStack,
     HomeStack,
     LinksStack,
-    SettingsStack,
-    DebugStack
+    SettingsStack
   },
   {
     tabBarOptions: {
       style: {
-        backgroundColor: "#222"
+        backgroundColor: "#222",
+        borderTopColor: "rgba(255,255,255,.1)"
       }
     }
   }
