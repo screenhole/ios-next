@@ -24,7 +24,7 @@
       "buildNumber": "1.0",
       "associatedDomains": ["www.screenhole.net", "www.screenhole.com"]
     },
-    "primaryColor": "#000000",
+    "primaryColor": "#7137f9",
     "githubUrl": "https://github.com/screenhole/ios-next",
     "scheme": "screenhole"
   }
