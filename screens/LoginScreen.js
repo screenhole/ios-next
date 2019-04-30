@@ -1,14 +1,17 @@
 import React from "react";
+import styled from "styled-components/native";
 import {
   ScrollView,
   Text,
   TextInput,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage
 } from "react-native";
+import { LinearGradient } from "expo";
+
+import api from "../utils/api";
 import colors from "../constants/Colors";
-import { WebBrowser, LinearGradient } from "expo";
-import styled from "styled-components/native";
 
 import BigButton from "../components/BigButton";
 
@@ -27,50 +30,90 @@ export default class LoginScreen extends React.Component {
 
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      loggedIn: false
     };
   }
+
+  componentDidMount = async () => {
+    try {
+      await AsyncStorage.getItem("jwt");
+
+      this.setState({
+        loggedIn: true
+      });
+    } catch (e) {
+      this.setState({
+        loggedIn: false
+      });
+    }
+  };
 
   render() {
     return (
       <Layout>
         <ScrollView>
-          <Header>Log in</Header>
-          <InputGroup>
-            <Field
-              placeholder="username"
-              onChangeText={username => this.setState({ username })}
-              placeholderTextColor="#666"
-              autoCapitalize="none"
-              autoCorrect={false}
-              autoFocus
-              keyboardAppearance="dark"
-              returnKeyType="next"
-              textContentType="username"
-            />
-            <Field
-              placeholder="password"
-              onChangeText={password => this.setState({ password })}
-              placeholderTextColor="#666"
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardAppearance="dark"
-              returnKeyType="go"
-              secureTextEntry={true}
-              textContentType="password"
-            />
-            <BigButton
-              label="Let me in"
-              haptic={true}
-              onPressAction={this.authenticate}
-            />
-          </InputGroup>
+          {this.state.loggedIn ? (
+            <View>
+              <Header>You’re logged in.</Header>
+            </View>
+          ) : (
+            <View>
+              <Header>Log in</Header>
+              <InputGroup>
+                <Field
+                  placeholder="username"
+                  onChangeText={username => this.setState({ username })}
+                  placeholderTextColor="#666"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  autoFocus
+                  keyboardAppearance="dark"
+                  returnKeyType="next"
+                  textContentType="username"
+                />
+                <Field
+                  placeholder="password"
+                  onChangeText={password => this.setState({ password })}
+                  placeholderTextColor="#666"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardAppearance="dark"
+                  returnKeyType="go"
+                  secureTextEntry={true}
+                  textContentType="password"
+                />
+                <BigButton
+                  label="Let me in"
+                  haptic={true}
+                  onPressAction={this.authenticate}
+                />
+              </InputGroup>
+            </View>
+          )}
         </ScrollView>
       </Layout>
     );
   }
 
-  authenticate = () => {};
+  authenticate = async () => {
+    const token = await api.post("/users/token", {
+      auth: {
+        username: this.state.username,
+        password: this.state.password
+      }
+    });
+
+    try {
+      await AsyncStorage.setItem("jwt", token.data.jwt);
+
+      this.setState({
+        loggedIn: true
+      });
+    } catch (e) {
+      console.error("Failed to log in.");
+    }
+  };
 }
 
 const Layout = styled.View`

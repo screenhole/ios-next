@@ -16,15 +16,11 @@ const HomeStack = createStackNavigator({
 });
 
 HomeStack.navigationOptions = {
-  tabBarLabel: "Feed",
+  showLabel: false,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={
-        Platform.OS === "ios"
-          ? `ios-information-circle${focused ? "" : "-outline"}`
-          : "md-information-circle"
-      }
+      name={Platform.OS === "ios" ? `ios-home` : "md-home"}
     />
   )
 };
@@ -34,11 +30,11 @@ const LinksStack = createStackNavigator({
 });
 
 LinksStack.navigationOptions = {
-  tabBarLabel: "Chat",
+  showLabel: false,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === "ios" ? "ios-link" : "md-link"}
+      name={Platform.OS === "ios" ? "ios-chatbubbles" : "md-chatbubbles"}
     />
   )
 };
@@ -48,11 +44,11 @@ const SettingsStack = createStackNavigator({
 });
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: "Sup",
+  showLabel: false,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === "ios" ? "ios-options" : "md-options"}
+      name={Platform.OS === "ios" ? "ios-notifications" : "md-notifications"}
     />
   )
 };
@@ -62,7 +58,6 @@ const LoginStack = createStackNavigator({
 });
 
 LoginStack.navigationOptions = {
-  tabBarLabel: "Log in",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -80,6 +75,8 @@ export default createBottomTabNavigator(
   },
   {
     tabBarOptions: {
+      showLabel: false,
+      showIcon: true,
       style: {
         backgroundColor: "#222",
         borderTopColor: "rgba(255,255,255,.1)"
