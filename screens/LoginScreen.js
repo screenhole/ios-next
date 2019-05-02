@@ -71,6 +71,7 @@ export default class LoginScreen extends React.Component {
                   keyboardAppearance="dark"
                   returnKeyType="next"
                   textContentType="username"
+                  selectionColor={colors.tintColor}
                 />
                 <Field
                   placeholder="password"
@@ -82,6 +83,7 @@ export default class LoginScreen extends React.Component {
                   returnKeyType="go"
                   secureTextEntry={true}
                   textContentType="password"
+                  selectionColor={colors.tintColor}
                 />
                 <BigButton
                   label="Let me in"

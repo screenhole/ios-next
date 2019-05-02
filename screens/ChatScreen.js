@@ -1,25 +1,24 @@
 import React from "react";
 import styled from "styled-components/native";
 import {
-  Dimensions,
   ScrollView,
   Text,
+  TextInput,
   View,
-  FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage,
+  FlatList
 } from "react-native";
-import Image from "react-native-scalable-image";
 import TimeAgo from "react-native-timeago";
 
 import api from "../utils/api";
+import colors from "../constants/Colors";
 
 import Avatar from "../components/Avatar";
 
-const GRAB_PADDING = 8;
-
-export default class HomeScreen extends React.Component {
+export default class ChatScreen extends React.Component {
   static navigationOptions = {
-    title: "Screenhole",
+    title: "Chat",
     headerStyle: {
       backgroundColor: "#111",
       borderBottomColor: "rgba(255,255,255,.1)"
@@ -31,17 +30,32 @@ export default class HomeScreen extends React.Component {
     super();
 
     this.state = {
+      loggedIn: false,
       loading: true,
-      grabs: []
+      message: "",
+      chat_messages: []
     };
   }
 
   componentDidMount = async () => {
-    let res = await api.get(`/api/v2/holes/root/grabs?page=0`);
+    try {
+      await AsyncStorage.getItem("jwt");
+
+      this.setState({
+        loggedIn: true
+      });
+    } catch (e) {
+      this.setState({
+        loggedIn: false
+      });
+    }
+
+    let page = 0;
+    let res = await api.get(`/api/v2/chat_messages?page=${page}`);
 
     if (res.data) {
       this.setState({
-        grabs: res.data.grabs,
+        chat_messages: [...res.data.chat_messages],
         loading: false
       });
     }
@@ -50,19 +64,27 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <Layout>
-        {this.state.loading && (
-          <View>
-            <LoadingState>Loading Grabs...</LoadingState>
-          </View>
-        )}
+        <ChatInput>
+          <Field
+            placeholder="Type a message..."
+            onChangeText={message => this.setState({ message })}
+            placeholderTextColor="#666"
+            keyboardAppearance="dark"
+            returnKeyType="send"
+            blurOnSubmit
+            clearButtonMode="while-editing"
+            enablesReturnKeyAutomatically
+            selectionColor={colors.tintColor}
+          />
+        </ChatInput>
         {!this.state.loading && (
-          <GrabStream>
+          <ChatStream>
             <FlatList
-              data={this.state.grabs}
+              data={this.state.chat_messages}
               keyExtractor={item => item.id}
               renderItem={({ item }) => (
-                <Grab>
-                  <GrabAuthor>
+                <ChatMessage>
+                  <MessageAuthor>
                     <View
                       style={{
                         flexDirection: "row"
@@ -84,17 +106,12 @@ export default class HomeScreen extends React.Component {
                         }}
                       />
                     </View>
-                  </GrabAuthor>
-                  <ImageBorder>
-                    <GrabImage
-                      width={Dimensions.get("window").width - GRAB_PADDING * 2}
-                      source={{ uri: item.image_public_url }}
-                    />
-                  </ImageBorder>
-                </Grab>
+                  </MessageAuthor>
+                  <Message>{item.message}</Message>
+                </ChatMessage>
               )}
             />
-          </GrabStream>
+          </ChatStream>
         )}
       </Layout>
     );
@@ -103,36 +120,30 @@ export default class HomeScreen extends React.Component {
 
 const Layout = styled.View`
   background-color: #000;
+  padding-top: 0;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
 `;
 
-const LoadingState = styled.Text`
-  color: #666;
-  font-size: 24px;
+const ChatInput = styled.View`
+  flex-direction: row;
+  width: 100%;
 `;
 
-const Description = styled.Text`
+const Field = styled.TextInput`
   color: white;
-  font-size: 24px;
+  background-color: #222;
+  padding: 16px 12px;
+  width: 100%;
+  font-size: 18px;
 `;
 
-const GrabStream = styled.ScrollView`
+const ChatStream = styled.ScrollView`
   width: 100%;
   height: 100%;
 `;
 
-const Grab = styled.View`
-  padding: ${GRAB_PADDING}px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 20px;
-`;
-
-const GrabAuthor = styled.View`
+const MessageAuthor = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -152,13 +163,10 @@ const Username = styled.Text`
   font-size: 16px;
 `;
 
-const ImageBorder = styled.View`
-  border-radius: 5px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+const ChatMessage = styled.View`
+  padding: 16px;
 `;
 
-const GrabImage = styled(Image)`
-  border-radius: 5px;
-  overflow: hidden;
+const Message = styled.Text`
+  color: white;
 `;
