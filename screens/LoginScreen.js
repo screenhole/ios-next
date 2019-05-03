@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   View,
+  Button,
   TouchableOpacity,
   AsyncStorage
 } from "react-native";
@@ -37,11 +38,13 @@ export default class LoginScreen extends React.Component {
 
   componentDidMount = async () => {
     try {
-      await AsyncStorage.getItem("jwt");
+      let token = await AsyncStorage.getItem("default_auth_token");
 
-      this.setState({
-        loggedIn: true
-      });
+      if (token) {
+        this.setState({
+          loggedIn: true
+        });
+      }
     } catch (e) {
       this.setState({
         loggedIn: false
@@ -84,6 +87,7 @@ export default class LoginScreen extends React.Component {
                   secureTextEntry={true}
                   textContentType="password"
                   selectionColor={colors.tintColor}
+                  onSubmitEditing={this.authenticate}
                 />
                 <BigButton
                   label="Let me in"
@@ -93,6 +97,16 @@ export default class LoginScreen extends React.Component {
               </InputGroup>
             </View>
           )}
+          <View
+            style={{
+              marginTop: 80
+            }}
+          >
+            <Button
+              title="Clear AsyncStorage"
+              onPress={this.clearAsyncStorage}
+            />
+          </View>
         </ScrollView>
       </Layout>
     );
@@ -107,7 +121,7 @@ export default class LoginScreen extends React.Component {
     });
 
     try {
-      await AsyncStorage.setItem("jwt", token.data.jwt);
+      api.setAuthHeader(token.data.jwt);
 
       this.setState({
         loggedIn: true
@@ -115,6 +129,10 @@ export default class LoginScreen extends React.Component {
     } catch (e) {
       console.error("Failed to log in.");
     }
+  };
+
+  clearAsyncStorage = async () => {
+    AsyncStorage.clear();
   };
 }
 

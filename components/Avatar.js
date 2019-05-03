@@ -14,7 +14,11 @@ export default class Avatar extends React.Component {
 
   render() {
     return (
-      <AvatarWrapper>
+      <AvatarWrapper
+        style={{
+          width: this.props.size
+        }}
+      >
         <Image
           style={{
             width: this.props.size,

@@ -963,6 +963,11 @@ acorn@^6.0.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.1.1.tgz#7d25ae05bb8ad1f9b699108e1094ecd7884adc1f"
   integrity sha512-jPTiwtOxaHNaAPg/dmrJ/beuzLRnXtB0kQPQ8JpotKJgTB6rX6c8mlf315941pyjBSaPg8NHXS9fhP4u17DpGA==
 
+actioncable@^5.0.0:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/actioncable/-/actioncable-5.2.3.tgz#639d98855b854b7bfe2059ab97d6e0ae8fd60a1d"
+  integrity sha512-KNdZHRDu92VDSO7SOEJS8Bf5G//LZZLz5e6m7mv8Wjafe9Svdp/DPJ/DpO7rJmPAlKcLAYwi/R7pNJ/VCHV1FQ==
+
 ajv-errors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
@@ -5911,6 +5916,13 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-native-actioncable@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-actioncable/-/react-native-actioncable-0.0.3.tgz#24c14a8364d9f2a905f6b788fba3183468ddb270"
+  integrity sha1-JMFKg2TZ8qkF9reI+6MYNGjdsnA=
+  dependencies:
+    actioncable "^5.0.0"
 
 react-native-branch@2.2.5:
   version "2.2.5"

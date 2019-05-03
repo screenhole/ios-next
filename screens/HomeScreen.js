@@ -12,10 +12,11 @@ import Image from "react-native-scalable-image";
 import TimeAgo from "react-native-timeago";
 
 import api from "../utils/api";
+import cable from "../utils/cable";
 
 import Avatar from "../components/Avatar";
 
-const GRAB_PADDING = 8;
+const GRAB_PADDING = 16;
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -36,7 +37,28 @@ export default class HomeScreen extends React.Component {
     };
   }
 
+  createSocket = () => {
+    cable.subscriptions.create(
+      {
+        channel: "GrabsChannel",
+        hole: "root"
+      },
+      {
+        connected: () => {
+          console.log("Connected!");
+        },
+        received: data => {
+          this.setState({
+            grabs: [data.grab, ...this.state.grabs]
+          });
+        }
+      }
+    );
+  };
+
   componentDidMount = async () => {
+    this.createSocket();
+
     let res = await api.get(`/api/v2/holes/root/grabs?page=0`);
 
     if (res.data) {
@@ -159,6 +181,6 @@ const ImageBorder = styled.View`
 `;
 
 const GrabImage = styled(Image)`
-  border-radius: 5px;
+  border-radius: 4px;
   overflow: hidden;
 `;
