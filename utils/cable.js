@@ -1,9 +1,10 @@
 import api from "./api";
 import ActionCable from "react-native-actioncable";
+import { encode as btoa } from "base-64";
 
 let { authenticated } = api;
 
-var cableSocketUrl;
+let cableSocketUrl;
 
 if (authenticated && api.headers) {
   let token = api.headers.Authorization.split(/ /)[1];

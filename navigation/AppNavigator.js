@@ -3,8 +3,6 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation";
 
 import MainTabNavigator from "./MainTabNavigator";
 
-if (module.hot) module.hot.accept();
-
 export default createAppContainer(
   createSwitchNavigator({
     // You could add another route here for authentication.

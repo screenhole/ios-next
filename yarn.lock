@@ -1788,6 +1788,11 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
+base-64@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
+  integrity sha1-eAqZyE59YAJgNhURxId2E78k9rs=
+
 base64-js@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.1.2.tgz#d6400cac1c4c660976d90d07a04351d89395f5e8"
@@ -5967,9 +5972,9 @@ react-native-safe-module@^1.1.0:
     dedent "^0.6.0"
 
 react-native-scalable-image@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-scalable-image/-/react-native-scalable-image-0.5.0.tgz#3af75433f80e8cc29a04b0aee2a8c79317ff5663"
-  integrity sha512-NzHfZxyoY+x+lYy2NvbOvkAzfyCVxbb72gvLmpCUuR9WH3KAxZd9Ogf7bbN1Ltt3QelorcQ2++4MnwHuHYI1BA==
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-scalable-image/-/react-native-scalable-image-0.5.1.tgz#31876259bdd5dba10537b1a073a9783596db0d56"
+  integrity sha512-bUphGBuRdet6Tx2lkgD9goa6UDcQNV9piiUUWxN59cg5BY7B1OFfkcM+9gAELCBPWqYGEoADEk6MtY35b1Rbpg==
 
 react-native-screens@1.0.0-alpha.22, "react-native-screens@^1.0.0 || ^1.0.0-alpha":
   version "1.0.0-alpha.22"
@@ -6429,6 +6434,11 @@ rx-lite@*, rx-lite@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
   integrity sha1-Cx4Rr4vESDbwSmQH6S2kJGe3lEQ=
+
+rxjs-observable@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/rxjs-observable/-/rxjs-observable-0.0.7.tgz#12d37a52e60f1ed0660838fdc44a94eb23c373ba"
+  integrity sha512-aB3nxdX34jbr+83d2b/OERp/96EKSfx0hns06Tt5Gji49AxIPL/D+RV4+jjolPWW3fxArEi3phOEDx9l+RiCLA==
 
 safe-buffer@5.1.2, safe-buffer@^5.0.1, safe-buffer@^5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
@@ -7131,6 +7141,13 @@ ultron@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.1.1.tgz#9fe1536a10a664a65266a1e3ccf85fd36302bc9c"
   integrity sha512-UIEXBNeYmKptWH6z8ZnqTeS8fV74zG0/eRU9VGkpzz+LIJNs8W/zM/L+7ctCkRrgbNnnR0xxw4bKOr0cW0N0Og==
+
+undux@^5.0.0-beta.22:
+  version "5.0.0-beta.22"
+  resolved "https://registry.yarnpkg.com/undux/-/undux-5.0.0-beta.22.tgz#aa7c51d826fbe8477afd49cf252cf60ca751e98e"
+  integrity sha512-uiiw9mNmhjq49im0yCwm5kdCs3iQYficgFrnI0KCKQFqVYs53uzC/iT++2F1lqgE2eVfadMTJwx9q2WfpWSafA==
+  dependencies:
+    rxjs-observable "^0.0.7"
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"

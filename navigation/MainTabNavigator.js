@@ -6,72 +6,67 @@ import {
 } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
-import HomeScreen from "../screens/HomeScreen";
-import ChatScreen from "../screens/ChatScreen";
-import SettingsScreen from "../screens/SettingsScreen";
-import LoginScreen from "../screens/LoginScreen";
+
+import HomeScreenContainer from "../screens/Home/HomeScreenContainer";
+import ChatScreen from "../screens/Chat/ChatScreen";
+import UploadScreen from "../screens/Upload/UploadScreen";
+import SupScreen from "../screens/Sup/SupScreen";
+import ExtraScreen from "../screens/Extra/ExtraScreen";
+import LoginScreen from "../screens/Login/LoginScreen";
+import GrabScreen from "../screens/Grab/GrabScreen";
 
 const HomeStack = createStackNavigator({
-  Home: HomeScreen
+  Home: HomeScreenContainer,
+  Grab: {
+    screen: GrabScreen,
+    path: "grab/:id"
+  }
 });
 
-HomeStack.navigationOptions = {
-  showLabel: false,
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === "ios" ? `ios-home` : "md-home"}
-    />
-  )
-};
-
-const LinksStack = createStackNavigator({
-  Links: ChatScreen
+const ChatStack = createStackNavigator({
+  Chat: ChatScreen
 });
 
-LinksStack.navigationOptions = {
-  showLabel: false,
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === "ios" ? "ios-chatbubbles" : "md-chatbubbles"}
-    />
-  )
-};
-
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen
+const UploadStack = createStackNavigator({
+  Upload: UploadScreen
 });
 
-SettingsStack.navigationOptions = {
-  showLabel: false,
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === "ios" ? "ios-notifications" : "md-notifications"}
-    />
-  )
-};
+const SupStack = createStackNavigator({
+  Sup: SupScreen
+});
 
-const LoginStack = createStackNavigator({
+const ExtraStack = createStackNavigator({
+  Extra: ExtraScreen,
   Login: LoginScreen
 });
 
-LoginStack.navigationOptions = {
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === "ios" ? "ios-unlock" : "md-unlock"}
-    />
-  )
+HomeStack.navigationOptions = {
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" />
+};
+
+ChatStack.navigationOptions = {
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="chat" />
+};
+
+UploadStack.navigationOptions = {
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="add" />
+};
+
+SupStack.navigationOptions = {
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="sup" />
+};
+
+ExtraStack.navigationOptions = {
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="hamburger" />
 };
 
 export default createBottomTabNavigator(
   {
     HomeStack,
-    LoginStack,
-    LinksStack,
-    SettingsStack
+    ChatStack,
+    UploadStack,
+    SupStack,
+    ExtraStack
   },
   {
     tabBarOptions: {

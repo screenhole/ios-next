@@ -10,12 +10,13 @@ import {
   FlatList
 } from "react-native";
 import TimeAgo from "react-native-timeago";
+import debounce from "lodash/debounce";
 
-import api from "../utils/api";
-import cable from "../utils/cable";
-import colors from "../constants/Colors";
+import api from "../../utils/api";
+import cable from "../../utils/cable";
+import colors from "../../constants/Colors";
 
-import Avatar from "../components/Avatar";
+import Avatar from "../../components/Avatar";
 
 export default class ChatScreen extends React.Component {
   static navigationOptions = {
@@ -33,9 +34,12 @@ export default class ChatScreen extends React.Component {
     this.state = {
       loggedIn: false,
       loading: true,
+      pageOffset: 2,
       message: "",
       chat_messages: []
     };
+
+    this.loadMore = debounce(this.loadMore, 100);
   }
 
   createSocket = () => {
@@ -72,13 +76,28 @@ export default class ChatScreen extends React.Component {
       });
     }
 
-    let page = 0;
+    let page = 1;
     let res = await api.get(`/api/v2/chat_messages?page=${page}`);
 
     if (res.data) {
       this.setState({
         chat_messages: [...res.data.chat_messages],
         loading: false
+      });
+    }
+  };
+
+  loadMore = async () => {
+    const page = this.state.pageOffset;
+
+    let res = await api.get(`/api/v2/chat_messages?page=${page}`);
+
+    console.log(res.data.chat_messages);
+
+    if (res.data) {
+      this.setState({
+        chat_messages: [...this.state.chat_messages, ...res.data.chat_messages],
+        pageOffset: this.state.pageOffset + 1
       });
     }
   };
@@ -108,6 +127,8 @@ export default class ChatScreen extends React.Component {
           <ChatStream>
             <FlatList
               data={this.state.chat_messages}
+              onEndReached={this.loadMore}
+              onEndReachedThreshold={0.01}
               keyExtractor={item => item.id}
               renderItem={({ item }) => (
                 <ChatMessage>
@@ -186,9 +207,9 @@ const Field = styled.TextInput`
   box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.15);
 `;
 
-const ChatStream = styled.ScrollView`
+const ChatStream = styled.View`
   width: 100%;
-  height: 100%;
+  height: 92%;
 `;
 
 const ChatMessage = styled.View`
@@ -198,12 +219,12 @@ const ChatMessage = styled.View`
 `;
 
 const AvatarBlock = styled.View`
-  width: 13%;
+  width: 44px;
 `;
 
 const MessageBlock = styled.View`
   flex-direction: column;
-  width: 87%;
+  flex: 1;
 `;
 
 const MessageAuthor = styled.View`

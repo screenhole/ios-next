@@ -4,13 +4,19 @@ import {
   StatusBar,
   StyleSheet,
   View,
-  AsyncStorage
+  AsyncStorage,
+  SafeAreaView
 } from "react-native";
 import { AppLoading, Asset, Icon } from "expo";
+import styled from "styled-components/native";
 
 import api from "./utils/api";
+import Store from "./store/store";
 
 import AppNavigator from "./navigation/AppNavigator";
+// Help reduce memory and CPU usage with useScreens
+import { useScreens } from "react-native-screens";
+useScreens();
 
 export default class App extends React.Component {
   state = {
@@ -23,8 +29,6 @@ export default class App extends React.Component {
 
       if (token !== null) {
         api.setHeader("Authorization", `Bearer ${token}`);
-      } else {
-        alert("You need to log in.");
       }
     } catch (e) {
       console.warn(e);
@@ -47,7 +51,9 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === "ios" && <StatusBar barStyle="light-content" />}
-          <AppNavigator />
+          <Store.Container>
+            <AppNavigator />
+          </Store.Container>
         </View>
       );
     }
@@ -56,8 +62,7 @@ export default class App extends React.Component {
   _loadResourcesAsync = async () => {
     return Promise.all([
       Asset.loadAsync([
-        require("./assets/images/robot-dev.png"),
-        require("./assets/images/robot-prod.png")
+        // png
       ])
     ]);
   };
