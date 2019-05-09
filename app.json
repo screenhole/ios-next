@@ -5,10 +5,7 @@
     "description": "Post cool grabs on the internet.",
     "privacy": "unlisted",
     "sdkVersion": "32.0.0",
-    "platforms": [
-      "ios",
-      "android"
-    ],
+    "platforms": ["ios", "android"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -20,17 +17,11 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.thinko.ScreenholeNext",
       "buildNumber": "1.0",
-      "associatedDomains": [
-        "www.screenhole.net",
-        "www.screenhole.com"
-      ],
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to take photos for sharing with others.",
         "NSPhotoLibraryUsageDescription": "This app uses your photo library to pick photos for sharing with others."
