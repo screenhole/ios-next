@@ -11,7 +11,6 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@expo/samples": "2.1.1",
     "apisauce": "^1.0.2",
     "base-64": "^0.1.0",
     "expo": "^32.0.0",
@@ -19,6 +18,7 @@
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-actioncable": "^0.0.3",
+    "react-native-autolink": "https://github.com/screenhole/react-native-autolink",
     "react-native-scalable-image": "^0.5.0",
     "react-native-timeago": "^0.4.0",
     "react-navigation": "^3.0.9",

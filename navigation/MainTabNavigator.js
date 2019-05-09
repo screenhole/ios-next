@@ -8,23 +8,23 @@ import {
 import TabBarIcon from "../components/TabBarIcon";
 
 import HomeScreenContainer from "../screens/Home/HomeScreenContainer";
-import ChatScreen from "../screens/Chat/ChatScreen";
+import ChatScreenContainer from "../screens/Chat/ChatScreenContainer";
 import UploadScreen from "../screens/Upload/UploadScreen";
-import SupScreen from "../screens/Sup/SupScreen";
-import ExtraScreen from "../screens/Extra/ExtraScreen";
-import LoginScreen from "../screens/Login/LoginScreen";
-import GrabScreen from "../screens/Grab/GrabScreen";
+import SupScreenContainer from "../screens/Sup/SupScreenContainer";
+import ExtraScreenContainer from "../screens/Extra/ExtraScreenContainer";
+import LoginScreenContainer from "../screens/Login/LoginScreenContainer";
+import GrabScreenContainer from "../screens/Grab/GrabScreenContainer";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreenContainer,
   Grab: {
-    screen: GrabScreen,
+    screen: GrabScreenContainer,
     path: "grab/:id"
   }
 });
 
 const ChatStack = createStackNavigator({
-  Chat: ChatScreen
+  Chat: ChatScreenContainer
 });
 
 const UploadStack = createStackNavigator({
@@ -32,12 +32,16 @@ const UploadStack = createStackNavigator({
 });
 
 const SupStack = createStackNavigator({
-  Sup: SupScreen
+  Sup: SupScreenContainer,
+  Grab: {
+    screen: GrabScreenContainer,
+    path: "grab/:id"
+  }
 });
 
 const ExtraStack = createStackNavigator({
-  Extra: ExtraScreen,
-  Login: LoginScreen
+  Extra: ExtraScreenContainer,
+  Login: LoginScreenContainer
 });
 
 HomeStack.navigationOptions = {
@@ -64,7 +68,7 @@ export default createBottomTabNavigator(
   {
     HomeStack,
     ChatStack,
-    UploadStack,
+    // UploadStack,
     SupStack,
     ExtraStack
   },

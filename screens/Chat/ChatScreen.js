@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components/native";
 import {
   ScrollView,
+  Button,
   Text,
   TextInput,
   View,
@@ -11,28 +12,20 @@ import {
 } from "react-native";
 import TimeAgo from "react-native-timeago";
 import debounce from "lodash/debounce";
+import Autolink from "react-native-autolink";
 
 import api from "../../utils/api";
 import cable from "../../utils/cable";
 import colors from "../../constants/Colors";
+import Store from "../../store/store";
 
 import Avatar from "../../components/Avatar";
 
-export default class ChatScreen extends React.Component {
-  static navigationOptions = {
-    title: "Chat",
-    headerStyle: {
-      backgroundColor: "#111",
-      borderBottomColor: "rgba(255,255,255,.1)"
-    },
-    headerTintColor: "white"
-  };
-
+class ChatScreen extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      loggedIn: false,
       loading: true,
       pageOffset: 2,
       message: "",
@@ -64,18 +57,6 @@ export default class ChatScreen extends React.Component {
   componentDidMount = async () => {
     this.createSocket();
 
-    try {
-      await AsyncStorage.getItem("jwt");
-
-      this.setState({
-        loggedIn: true
-      });
-    } catch (e) {
-      this.setState({
-        loggedIn: false
-      });
-    }
-
     let page = 1;
     let res = await api.get(`/api/v2/chat_messages?page=${page}`);
 
@@ -103,25 +84,45 @@ export default class ChatScreen extends React.Component {
   };
 
   render() {
+    let store = this.props.store;
+
     return (
       <Layout>
-        <ChatInput>
-          <Field
-            placeholder="Type a message..."
-            ref={chomment => (this.chomment = chomment)}
-            value={this.state.message}
-            onChangeText={message => this.setState({ message })}
-            placeholderTextColor="#666"
-            keyboardAppearance="dark"
-            returnKeyType="send"
-            clearButtonMode="while-editing"
-            enablesReturnKeyAutomatically
-            selectionColor={colors.tintColor}
-            multiline
-            blurOnSubmit
-            onSubmitEditing={this._postMessage}
-          />
-        </ChatInput>
+        {store.get("loggedIn") ? (
+          <ChatInput>
+            <Field
+              placeholder="Type a message..."
+              ref={chomment => (this.chomment = chomment)}
+              value={this.state.message}
+              onChangeText={message => this.setState({ message })}
+              placeholderTextColor="#666"
+              keyboardAppearance="dark"
+              returnKeyType="send"
+              clearButtonMode="while-editing"
+              enablesReturnKeyAutomatically
+              selectionColor={colors.tintColor}
+              multiline
+              blurOnSubmit
+              onSubmitEditing={this._postMessage}
+            />
+          </ChatInput>
+        ) : (
+          <View
+            style={{
+              height: 54,
+              paddingTop: 6,
+              backgroundColor: "hsl(0,0%,4%)"
+            }}
+          >
+            <Button
+              title="Log in to send messages"
+              color={colors.tintColor}
+              onPress={() => {
+                this.props.navigation.navigate("Login");
+              }}
+            />
+          </View>
+        )}
         {this.state.loading && <LoadingState>Loading Chat...</LoadingState>}
         {!this.state.loading && (
           <ChatStream>
@@ -155,7 +156,21 @@ export default class ChatScreen extends React.Component {
                         }}
                       />
                     </MessageAuthor>
-                    <Message>{item.message}</Message>
+
+                    {/* fucking dependency hell, i’m gonna get the mention linking working later */}
+                    <Autolink
+                      text={item.message}
+                      webFallback={true}
+                      showAlert={true}
+                      linkStyle={{
+                        color: colors.tintColor
+                      }}
+                      style={{
+                        color: "#6c6f93",
+                        fontSize: 16,
+                        lineHeight: 22
+                      }}
+                    />
                   </MessageBlock>
                 </ChatMessage>
               )}
@@ -176,6 +191,8 @@ export default class ChatScreen extends React.Component {
     this.chomment.clear();
   };
 }
+
+export default Store.withStore(ChatScreen);
 
 const Layout = styled.View`
   background-color: #000;
@@ -242,10 +259,4 @@ const Username = styled.Text`
   color: white;
   font-weight: 700;
   font-size: 16px;
-`;
-
-const Message = styled.Text`
-  color: #6c6f93;
-  font-size: 16px;
-  line-height: 22px;
 `;

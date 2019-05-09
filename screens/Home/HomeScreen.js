@@ -5,7 +5,8 @@ import {
   Text,
   View,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage
 } from "react-native";
 import debounce from "lodash/debounce";
 
@@ -49,6 +50,21 @@ class HomeScreen extends React.Component {
   };
 
   componentDidMount = async () => {
+    const store = this.props.store;
+    let token = await AsyncStorage.getItem("default_auth_token");
+
+    console.log(token);
+
+    if (token !== null) {
+      api.setAuthHeader(token);
+      store.set("loggedIn")(true);
+      console.log("Got a token. You’re logged in.");
+    } else {
+      console.warn(
+        "No Authorization token present in AsyncStorage. Please log in."
+      );
+    }
+
     this.createSocket();
 
     let res = await api.get(`/api/v2/holes/root/grabs?page=1`);
@@ -79,15 +95,6 @@ class HomeScreen extends React.Component {
 
     return (
       <Layout>
-        {!store.state.loggedIn && (
-          <Toast
-            onPress={() => {
-              this.props.navigation.navigate("Login");
-            }}
-          >
-            <ToastText>🔓️ Tap here to log in</ToastText>
-          </Toast>
-        )}
         {this.state.loading && (
           <View>
             <LoadingState>Loading Grabs...</LoadingState>
@@ -109,11 +116,21 @@ class HomeScreen extends React.Component {
                   created_at={item.created_at}
                   navigation={this.props.navigation}
                   description={item.description}
+                  memos={item.memos}
                 />
               )}
             />
           </GrabStream>
         )}
+        {/* {!store.state.loggedIn && (
+          <Toast
+            onPress={() => {
+              this.props.navigation.navigate("Login");
+            }}
+          >
+            <ToastText>🔓️ Tap here to log in</ToastText>
+          </Toast>
+        )} */}
       </Layout>
     );
   }
@@ -142,7 +159,6 @@ const Toast = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  z-index: 2;
   background-color: ${colors.tintColor};
 `;
 

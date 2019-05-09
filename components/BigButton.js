@@ -7,6 +7,7 @@ export default class BigButton extends Component {
   render() {
     return (
       <TouchButton
+        style={this.props.style}
         onPress={() => {
           if (Platform.OS === "ios" && this.props.haptic === true) {
             Haptic.impact(Haptic.ImpactFeedbackStyle["Heavy"]);

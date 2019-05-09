@@ -7,54 +7,43 @@ import {
   View,
   Button,
   TouchableOpacity,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from "react-native";
-import { LinearGradient } from "expo";
 
 import api from "../../utils/api";
 import colors from "../../constants/Colors";
+import Store from "../../store/store";
 
 import BigButton from "../../components/BigButton";
 
-export default class LoginScreen extends React.Component {
-  static navigationOptions = {
-    headerStyle: {
-      backgroundColor: "black",
-      borderBottomColor: "black"
-    },
-    headerTintColor: colors.tintColor
-  };
-
+class LoginScreen extends React.Component {
   constructor() {
     super();
 
     this.state = {
       username: "",
-      password: "",
-      loggedIn: false
+      password: ""
     };
   }
 
   componentDidMount = async () => {
-    try {
-      let token = await AsyncStorage.getItem("default_auth_token");
+    let token = await AsyncStorage.getItem("default_auth_token");
 
-      if (token) {
-        this.setState({
-          loggedIn: true
-        });
-      }
-    } catch (e) {
-      this.setState({
-        loggedIn: false
-      });
+    if (token !== null) {
+      api.setAuthHeader(token);
+      this.props.store.set("loggedIn")(true);
+    } else {
+      this.props.store.set("loggedIn")(false);
     }
   };
 
   render() {
+    const store = this.props.store;
+
     return (
       <Layout>
-        {this.state.loggedIn ? (
+        {store.get("loggedIn") ? (
           <View>
             <Header>You’re logged in.</Header>
           </View>
@@ -95,42 +84,44 @@ export default class LoginScreen extends React.Component {
             </InputGroup>
           </View>
         )}
-        <View
-          style={{
-            marginTop: 80
-          }}
-        >
-          <Button title="Clear AsyncStorage" onPress={this.clearAsyncStorage} />
-        </View>
       </Layout>
     );
   }
 
   authenticate = async () => {
-    const token = await api.post("/users/token", {
+    const store = this.props.store;
+
+    let token = await api.post("/users/token", {
       auth: {
         username: this.state.username,
         password: this.state.password
       }
     });
 
-    try {
+    if (token.ok) {
+      await AsyncStorage.setItem("default_auth_token", token.data.jwt);
       api.setAuthHeader(token.data.jwt);
-
-      this.setState({
-        loggedIn: true
-      });
-
-      this.props.navigation.navigate("Home");
-    } catch (e) {
-      console.error("Failed to log in.");
+      store.set("loggedIn")(true);
+      // this.props.navigation.navigate("Home");
+    } else {
+      await AsyncStorage.removeItem("default_auth_token");
+      store.set("loggedIn")(false);
+      Alert.alert(
+        "Hmm...",
+        "Are you sure this is the right password?",
+        [
+          {
+            text: "Dismiss",
+            style: "cancel"
+          }
+        ],
+        { cancelable: true }
+      );
     }
   };
-
-  clearAsyncStorage = async () => {
-    AsyncStorage.clear();
-  };
 }
+
+export default Store.withStore(LoginScreen);
 
 const Layout = styled.View`
   background-color: #000;

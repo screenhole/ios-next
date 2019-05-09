@@ -8,13 +8,16 @@ import {
   Button,
   TouchableOpacity,
   AsyncStorage,
-  FlatList
+  FlatList,
+  Image,
+  KeyboardAvoidingView
 } from "react-native";
 import { LinearGradient } from "expo";
 import TimeAgo from "react-native-timeago";
 
 import api from "../../utils/api";
 import colors from "../../constants/Colors";
+import Store from "../../store/store";
 
 import Avatar from "../../components/Avatar";
 import BigButton from "../../components/BigButton";
@@ -22,164 +25,171 @@ import Grab from "../../components/Grab";
 
 import LoginScreen from "../Login/LoginScreen";
 
-export default class GrabScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
-    title: `@${navigation.getParam("username", "mrhole")}’s grab`,
-    headerStyle: {
-      backgroundColor: "#111",
-      borderBottomColor: "rgba(255,255,255,.1)"
-    },
-    headerTintColor: colors.tintColor,
-    headerTitleStyle: {
-      color: "white"
-    }
-    // headerRight: (
-    //   <Button
-    //     onPress={() => alert("This is a button!")}
-    //     title="Share"
-    //     color={colors.tintColor}
-    //   />
-    // )
-  });
-
+class GrabScreen extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      username: "",
-      password: "",
-      loggedIn: false,
       loading: true,
-      grab: false
+      grab: false,
+      message: ""
     };
   }
 
   componentDidMount = async () => {
-    try {
-      let token = await AsyncStorage.getItem("default_auth_token");
+    this.loadGrab();
+  };
 
-      if (token) {
-        this.setState({
-          loggedIn: true
-        });
-      }
+  loadGrab = async () => {
+    // Load grab
+    const grab_id = this.props.navigation.getParam("grab_id", null);
+    let res = await api.get(`/grabs/${grab_id}`);
 
-      // Load grab
-      const grab_id = this.props.navigation.getParam("grab_id", null);
-      let res = await api.get(`/grabs/${grab_id}`);
+    console.log(res);
 
-      console.log(res);
-
-      if (res.ok) {
-        this.setState({
-          grab: res.data.grab,
-          loading: false
-        });
-      }
-    } catch (e) {
+    if (res.ok) {
       this.setState({
-        loggedIn: false
+        grab: res.data.grab,
+        loading: false
       });
     }
   };
 
   render() {
     const { navigation } = this.props;
+
     return (
-      <Layout>
-        <ScrollView>
-          {this.state.loading && (
-            <Grab
-              id={navigation.getParam("grab_id", null)}
-              image={navigation.getParam("image", null)}
-              username={navigation.getParam("username", null)}
-              gravatar_hash={navigation.getParam("gravatar_hash", null)}
-              created_at={navigation.getParam("created_at", null)}
-              description={navigation.getParam("description", null)}
-              fromDetails
-            />
-          )}
-          {!this.state.loading && (
-            <Grab
-              id={this.state.grab.id}
-              image={this.state.grab.image_public_url}
-              username={this.state.grab.user.username}
-              gravatar_hash={this.state.grab.user.gravatar_hash}
-              created_at={this.state.grab.created_at}
-              navigation={this.props.navigation}
-              description={this.state.grab.description}
-              fromDetails
-            />
-          )}
-          {!this.state.loading && this.state.grab.memos && (
-            <FlatList
-              data={this.state.grab.memos.reverse()}
-              keyExtractor={item => item.id}
-              renderItem={({ item }) => (
-                <ChatMessage>
-                  <AvatarBlock>
-                    <Avatar gravatar_hash={item.user.gravatar_hash} size={36} />
-                  </AvatarBlock>
-                  <MessageBlock>
-                    <MessageAuthor>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center"
-                        }}
-                      >
-                        <UsernameLink>
-                          <Username>{item.user.username}</Username>
-                        </UsernameLink>
-                      </View>
-                      <TimeAgo
-                        time={item.created_at}
-                        style={{
-                          color: "#444",
-                          fontSize: 13
-                        }}
+      <KeyboardAvoidingView behavior="position" enabled>
+        <Layout>
+          <ScrollView>
+            {this.state.loading && (
+              <Grab
+                id={navigation.getParam("grab_id", "")}
+                image={navigation.getParam("image", "")}
+                username={navigation.getParam("username", "")}
+                gravatar_hash={navigation.getParam("gravatar_hash", "")}
+                created_at={navigation.getParam("created_at", "")}
+                description={navigation.getParam("description", "")}
+                fromDetails
+              />
+            )}
+            {!this.state.loading && (
+              <Grab
+                id={this.state.grab.id}
+                image={this.state.grab.image_public_url}
+                username={this.state.grab.user.username}
+                gravatar_hash={this.state.grab.user.gravatar_hash}
+                created_at={this.state.grab.created_at}
+                navigation={this.props.navigation}
+                description={this.state.grab.description}
+                memos={this.state.grab.memos}
+                fromDetails
+              />
+            )}
+            {this.props.store.get("loggedIn") && (
+              <ChommentInputBlock>
+                <ChommentInput>
+                  <ChommentField
+                    placeholder="Type a chomment..."
+                    ref={chomment => (this.chomment = chomment)}
+                    value={this.state.message}
+                    onChangeText={message => this.setState({ message })}
+                    placeholderTextColor="#666"
+                    keyboardAppearance="dark"
+                    returnKeyType="send"
+                    clearButtonMode="while-editing"
+                    enablesReturnKeyAutomatically
+                    selectionColor={colors.tintColor}
+                    multiline
+                    blurOnSubmit
+                    onSubmitEditing={this._postMessage}
+                  />
+                </ChommentInput>
+              </ChommentInputBlock>
+            )}
+            {!this.state.loading && this.state.grab.memos && (
+              <FlatList
+                data={this.state.grab.memos.reverse()}
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => (
+                  <ChatMessage>
+                    <AvatarBlock>
+                      <Avatar
+                        gravatar_hash={item.user.gravatar_hash}
+                        size={36}
                       />
-                    </MessageAuthor>
-                    <Message>{item.message}</Message>
-                  </MessageBlock>
-                </ChatMessage>
-              )}
+                    </AvatarBlock>
+                    <MessageBlock>
+                      <MessageAuthor>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center"
+                          }}
+                        >
+                          <UsernameLink>
+                            <Username>{item.user.username}</Username>
+                          </UsernameLink>
+                        </View>
+                        <TimeAgo
+                          time={item.created_at}
+                          style={{
+                            color: "#444",
+                            fontSize: 13
+                          }}
+                        />
+                      </MessageAuthor>
+                      {item.message.match(/^💸.*💸️/) ? (
+                        <Message
+                          style={{
+                            color: colors.buttcoin
+                          }}
+                        >
+                          tipped {item.message.length}
+                        </Message>
+                      ) : (
+                        <Message>{item.message}</Message>
+                      )}
+                    </MessageBlock>
+                  </ChatMessage>
+                )}
+              />
+            )}
+            <View
+              style={{
+                height: 24
+              }}
             />
-          )}
-        </ScrollView>
-      </Layout>
+          </ScrollView>
+        </Layout>
+      </KeyboardAvoidingView>
     );
   }
 
-  authenticate = async () => {
-    const token = await api.post("/users/token", {
-      auth: {
-        username: this.state.username,
-        password: this.state.password
+  _postMessage = async () => {
+    const message = this.state.message;
+
+    await api.post(`/grabs/${this.state.grab.id}/memos`, {
+      memo: {
+        variant: "chomment",
+        message: message,
+        pending: false
       }
     });
 
-    try {
-      api.setAuthHeader(token.data.jwt);
-
-      this.setState({
-        loggedIn: true
-      });
-    } catch (e) {
-      console.error("Failed to log in.");
-    }
-  };
-
-  clearAsyncStorage = async () => {
-    AsyncStorage.clear();
+    this.loadGrab();
+    this.chomment.clear();
   };
 }
+
+export default Store.withStore(GrabScreen);
 
 const Layout = styled.View`
   background-color: #000;
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 `;
 
 const Chomment = styled.View`
@@ -224,4 +234,22 @@ const Message = styled.Text`
   font-size: 16px;
   line-height: 22px;
   margin-top: 6px;
+`;
+
+const ChommentInputBlock = styled.View`
+  padding: 16px;
+`;
+
+const ChommentInput = styled.View`
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 30px;
+  width: 100%;
+  background-color: hsl(0, 0%, 3%);
+`;
+
+const ChommentField = styled.TextInput`
+  color: white;
+  padding: 16px;
+  width: 100%;
+  font-size: 18px;
 `;

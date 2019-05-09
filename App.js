@@ -23,21 +23,6 @@ export default class App extends React.Component {
     isLoadingComplete: false
   };
 
-  componentDidMount = async () => {
-    try {
-      let token = await AsyncStorage.getItem("default_auth_token");
-
-      if (token !== null) {
-        api.setHeader("Authorization", `Bearer ${token}`);
-      }
-    } catch (e) {
-      console.warn(e);
-      console.log(
-        "No Authorization token present in AsyncStorage. Please log in."
-      );
-    }
-  };
-
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
@@ -61,9 +46,7 @@ export default class App extends React.Component {
 
   _loadResourcesAsync = async () => {
     return Promise.all([
-      Asset.loadAsync([
-        // png
-      ])
+      Asset.loadAsync([require("./assets/images/buttcoin.gif")])
     ]);
   };
 
