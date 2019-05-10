@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Platform } from "react-native";
 
 import Colors from "../constants/Colors";
 
@@ -15,7 +15,7 @@ export default class TabBarIcon extends React.Component {
     return (
       <View
         style={{
-          marginTop: 20
+          marginTop: Platform.OS === 'ios' ? 20 : 0
         }}
       >
         {this._renderIcon()}
