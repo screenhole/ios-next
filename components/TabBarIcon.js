@@ -15,7 +15,7 @@ export default class TabBarIcon extends React.Component {
     return (
       <View
         style={{
-          marginTop: Platform.OS === 'ios' ? 20 : 0
+          marginTop: 0
         }}
       >
         {this._renderIcon()}

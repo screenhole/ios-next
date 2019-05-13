@@ -6,7 +6,8 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  AsyncStorage
+  AsyncStorage,
+  RefreshControl
 } from "react-native";
 import debounce from "lodash/debounce";
 
@@ -23,6 +24,7 @@ class HomeScreen extends React.Component {
 
     this.state = {
       loading: true,
+      isRefreshing: false,
       grabs: [],
       pageOffset: 2
     };
@@ -90,6 +92,17 @@ class HomeScreen extends React.Component {
     }
   };
 
+  onRefresh = async () => {
+    let res = await api.get(`/api/v2/holes/root/grabs?page=1`);
+
+    if (res.data) {
+      this.setState({
+        grabs: res.data.grabs,
+        pageOffset: 2
+      });
+    }
+  };
+
   render() {
     let store = this.props.store;
 
@@ -107,6 +120,12 @@ class HomeScreen extends React.Component {
               onEndReached={this.loadMore}
               onEndReachedThreshold={0.01}
               keyExtractor={item => item.id}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={this.onRefresh.bind(this)}
+                />
+              }
               renderItem={({ item }) => (
                 <Grab
                   id={item.id}

@@ -8,7 +8,8 @@ import {
   View,
   TouchableOpacity,
   AsyncStorage,
-  FlatList
+  FlatList,
+  RefreshControl
 } from "react-native";
 import TimeAgo from "react-native-timeago";
 import debounce from "lodash/debounce";
@@ -27,6 +28,7 @@ class ChatScreen extends React.Component {
 
     this.state = {
       loading: true,
+      isRefreshing: false,
       pageOffset: 2,
       message: "",
       chat_messages: []
@@ -83,6 +85,17 @@ class ChatScreen extends React.Component {
     }
   };
 
+  onRefresh = async () => {
+    let res = await api.get(`/api/v2/chat_messages?page=1`);
+
+    if (res.data) {
+      this.setState({
+        chat_messages: res.data.chat_messages,
+        pageOffset: 2
+      });
+    }
+  };
+
   render() {
     let store = this.props.store;
 
@@ -131,6 +144,12 @@ class ChatScreen extends React.Component {
               onEndReached={this.loadMore}
               onEndReachedThreshold={0.01}
               keyExtractor={item => item.id}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={this.onRefresh}
+                />
+              }
               renderItem={({ item }) => (
                 <ChatMessage>
                   <AvatarBlock>

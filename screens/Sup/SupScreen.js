@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-import { View, Text, FlatList, Button } from "react-native";
+import { View, Text, FlatList, Button, RefreshControl } from "react-native";
 import debounce from "lodash/debounce";
 
 import api from "../../utils/api";
@@ -15,6 +15,7 @@ class SupScreen extends React.Component {
 
     this.state = {
       loading: true,
+      isRefreshing: false,
       notes: [],
       pageOffset: 2,
       hasMore: true
@@ -53,6 +54,16 @@ class SupScreen extends React.Component {
 
     if (!res.data.meta.next_page) {
       this.setState({ hasMore: false });
+    }
+  };
+
+  onRefresh = async () => {
+    let res = await api.get(`/api/v2/notifications?page=1`);
+
+    if (res.data) {
+      this.setState({
+        notes: res.data.notes
+      });
     }
   };
 
@@ -98,6 +109,12 @@ class SupScreen extends React.Component {
             onEndReached={this.loadMore}
             onEndReachedThreshold={0.01}
             keyExtractor={item => item.id}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.isRefreshing}
+                onRefresh={this.onRefresh}
+              />
+            }
             renderItem={({ item }) => (
               <SupNotification
                 message={item.meta.summary}
