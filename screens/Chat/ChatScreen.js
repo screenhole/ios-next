@@ -152,7 +152,15 @@ class ChatScreen extends React.Component {
               }
               renderItem={({ item }) => (
                 <ChatMessage>
-                  <AvatarBlock>
+                  <AvatarBlock
+                    onPress={() =>
+                      this.props.navigation.navigate("Profile", {
+                        username: item.user.username,
+                        user_id: item.user.id,
+                        gravatar_hash: item.user.gravatar_hash
+                      })
+                    }
+                  >
                     <Avatar gravatar_hash={item.user.gravatar_hash} size={36} />
                   </AvatarBlock>
                   <MessageBlock>
@@ -163,7 +171,15 @@ class ChatScreen extends React.Component {
                           alignItems: "center"
                         }}
                       >
-                        <UsernameLink>
+                        <UsernameLink
+                          onPress={() =>
+                            this.props.navigation.navigate("Profile", {
+                              username: item.user.username,
+                              user_id: item.user.id,
+                              gravatar_hash: item.user.gravatar_hash
+                            })
+                          }
+                        >
                           <Username>{item.user.username}</Username>
                         </UsernameLink>
                       </View>

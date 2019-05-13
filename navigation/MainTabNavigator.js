@@ -14,17 +14,26 @@ import SupScreenContainer from "../screens/Sup/SupScreenContainer";
 import ExtraScreenContainer from "../screens/Extra/ExtraScreenContainer";
 import LoginScreenContainer from "../screens/Login/LoginScreenContainer";
 import GrabScreenContainer from "../screens/Grab/GrabScreenContainer";
+import ProfileScreenContainer from "../screens/Profile/ProfileScreenContainer";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreenContainer,
   Grab: {
     screen: GrabScreenContainer,
     path: "grab/:id"
+  },
+  Profile: {
+    screen: ProfileScreenContainer,
+    path: "user/:username"
   }
 });
 
 const ChatStack = createStackNavigator({
-  Chat: ChatScreenContainer
+  Chat: ChatScreenContainer,
+  Profile: {
+    screen: ProfileScreenContainer,
+    path: "user/:username"
+  }
 });
 
 const UploadStack = createStackNavigator({
@@ -36,6 +45,10 @@ const SupStack = createStackNavigator({
   Grab: {
     screen: GrabScreenContainer,
     path: "grab/:id"
+  },
+  Profile: {
+    screen: ProfileScreenContainer,
+    path: "user/:username"
   }
 });
 

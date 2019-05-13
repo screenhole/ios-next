@@ -123,7 +123,7 @@ class HomeScreen extends React.Component {
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.isRefreshing}
-                  onRefresh={this.onRefresh.bind(this)}
+                  onRefresh={this.onRefresh}
                 />
               }
               renderItem={({ item }) => (
@@ -131,6 +131,7 @@ class HomeScreen extends React.Component {
                   id={item.id}
                   image={item.image_public_url}
                   username={item.user.username}
+                  user_id={item.user.id}
                   gravatar_hash={item.user.gravatar_hash}
                   created_at={item.created_at}
                   navigation={this.props.navigation}

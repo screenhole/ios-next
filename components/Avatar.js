@@ -16,8 +16,9 @@ export default class Avatar extends React.Component {
     return (
       <AvatarWrapper
         style={{
-          width: this.props.size
+          width: this.props.size || 32
         }}
+        onPress={this.props.onPress}
       >
         <Image
           style={{
@@ -25,6 +26,7 @@ export default class Avatar extends React.Component {
             height: this.props.size
           }}
           source={{ uri: this.gravatar() }}
+          onPress={this.props.onPress}
         />
       </AvatarWrapper>
     );
@@ -34,4 +36,5 @@ export default class Avatar extends React.Component {
 const AvatarWrapper = styled.View`
   border-radius: 1000;
   overflow: hidden;
+  background-color: #111;
 `;

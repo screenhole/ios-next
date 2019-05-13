@@ -127,7 +127,15 @@ class GrabScreen extends React.Component {
                             alignItems: "center"
                           }}
                         >
-                          <UsernameLink>
+                          <UsernameLink
+                            onPress={() =>
+                              this.props.navigation.navigate("Profile", {
+                                username: item.user.username,
+                                gravatar_hash: item.user.gravatar_hash,
+                                user_id: item.user.id
+                              })
+                            }
+                          >
                             <Username>{item.user.username}</Username>
                           </UsernameLink>
                         </View>

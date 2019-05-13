@@ -13,8 +13,10 @@ import TimeAgo from "react-native-timeago";
 import Avatar from "./Avatar";
 import ChommentIcon from "./icons/ChommentIcon";
 
+import api from "../utils/api";
 import colors from "../constants/Colors";
 import Store from "../store/store";
+
 const GRAB_PADDING = 16;
 
 class Grab extends React.Component {
@@ -42,6 +44,13 @@ class Grab extends React.Component {
     });
   };
 
+  dropTip = async () => {
+    // let res = await api.post(`/api/v2/holes/root/grabs/${this.props.id}/tips`, {
+    //   amount: 69
+    // });
+    // console.log(res);
+  };
+
   render() {
     return (
       <GrabWrapper fromDetails={this.props.fromDetails}>
@@ -52,7 +61,15 @@ class Grab extends React.Component {
             }}
           >
             <Avatar gravatar_hash={this.props.gravatar_hash} size={36} />
-            <UsernameLink>
+            <UsernameLink
+              onPress={() =>
+                this.props.navigation.navigate("Profile", {
+                  username: this.props.username,
+                  gravatar_hash: this.props.gravatar_hash,
+                  user_id: this.props.user_id
+                })
+              }
+            >
               <Username>{this.props.username}</Username>
             </UsernameLink>
           </View>
@@ -65,11 +82,13 @@ class Grab extends React.Component {
             />
           </View>
         </GrabAuthor>
+
         <ImageBorder
           activeOpacity={1}
           onPress={() =>
             this.props.navigation.navigate("Grab", {
               grab_id: this.props.id,
+              user_id: this.props.user_id,
               username: this.props.username,
               created_at: this.props.created_at,
               gravatar_hash: this.props.gravatar_hash,
@@ -88,6 +107,7 @@ class Grab extends React.Component {
             }}
           />
         </ImageBorder>
+
         {this.props.description !== null && (
           <GrabIndent>
             <Indent />
@@ -103,6 +123,7 @@ class Grab extends React.Component {
           onPress={() =>
             this.props.navigation.navigate("Grab", {
               grab_id: this.props.id,
+              user_id: this.props.user_id,
               username: this.props.username,
               created_at: this.props.created_at,
               gravatar_hash: this.props.gravatar_hash,
