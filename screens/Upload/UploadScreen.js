@@ -12,10 +12,12 @@ import {
   KeyboardAvoidingView
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { ImagePicker, Permissions } from "expo";
+import { ImagePicker, Permissions, FileSystem } from "expo";
 
 import api from "../../utils/api";
 import colors from "../../constants/Colors";
+import { fileToBase64Helper } from "../../utils/fileToBase64Helper";
+import { Upload } from "../../utils/carbon";
 
 import BigButton from "../../components/BigButton";
 
@@ -171,7 +173,7 @@ export default class UploadScreen extends React.Component {
 
     options = options || {};
     // start upload
-    const upload = new global.window.Carbon.Upload(file, {
+    const upload = new Upload(file, {
       url: url,
       method: "PUT",
       authorization: "Bearer " + token,
@@ -196,9 +198,24 @@ export default class UploadScreen extends React.Component {
     let getUploadToken = await api.post(`/api/v2/upload_tokens`);
     let data = getUploadToken.data;
 
-    console.log(data);
+    function urlToBlob(url) {
+      return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.onerror = reject;
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState === 4) {
+            resolve(xhr.response);
+          }
+        };
+        xhr.open("GET", url);
+        xhr.responseType = "blob"; // convert type
+        xhr.send();
+      });
+    }
 
-    const file = this.state.image;
+    const file = new File(fileToBase64Helper(this.state.image));
+
+    // const file = new Blob(this.state.image);
     const caption = this.caption.value;
 
     if (

@@ -9,7 +9,7 @@ import TabBarIcon from "../components/TabBarIcon";
 
 import HomeScreenContainer from "../screens/Home/HomeScreenContainer";
 import ChatScreenContainer from "../screens/Chat/ChatScreenContainer";
-import UploadScreen from "../screens/Upload/UploadScreen";
+import FakeUploadScreen from "../screens/Upload/FakeUploadScreen";
 import SupScreenContainer from "../screens/Sup/SupScreenContainer";
 import ExtraScreenContainer from "../screens/Extra/ExtraScreenContainer";
 import LoginScreenContainer from "../screens/Login/LoginScreenContainer";
@@ -37,7 +37,7 @@ const ChatStack = createStackNavigator({
 });
 
 const UploadStack = createStackNavigator({
-  Upload: UploadScreen
+  Upload: FakeUploadScreen
 });
 
 const SupStack = createStackNavigator({
@@ -81,7 +81,7 @@ export default createBottomTabNavigator(
   {
     HomeStack,
     ChatStack,
-    // UploadStack,
+    UploadStack,
     SupStack,
     ExtraStack
   },

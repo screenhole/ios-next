@@ -45,10 +45,10 @@ class Grab extends React.Component {
   };
 
   dropTip = async () => {
-    // let res = await api.post(`/api/v2/holes/root/grabs/${this.props.id}/tips`, {
-    //   amount: 69
-    // });
-    // console.log(res);
+    let res = await api.post(`/api/v2/holes/root/grabs/${this.props.id}/tips`, {
+      amount: 69
+    });
+    console.log(res);
   };
 
   render() {
@@ -85,6 +85,7 @@ class Grab extends React.Component {
 
         <ImageBorder
           activeOpacity={1}
+          onLongPress={this.dropTip}
           onPress={() =>
             this.props.navigation.navigate("Grab", {
               grab_id: this.props.id,
